@@ -1838,135 +1838,57 @@ function filterAndGoToPadron(circuito) {
   filterPadron();
 }
 
-// =================== PADRON ===================
 function initPadronFilters() {
-  const comunas = [...new Set(PADRON.map(a => a.comuna))].sort((a,b)=>parseInt(a)-parseInt(b));
+
   const cEl = document.getElementById('filtComuna');
-  comunas.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = 'Comuna ' + c; cEl.appendChild(o); })if (!contenedor) {
-  console.error('No se encontró el contenedor');
-  return;
-};
+  if (cEl) {
+    cEl.innerHTML = '<option value="">Todas las comunas</option>';
 
-  const barrios = [...new Set(PADRON.map(a => a.barrio))].sort();
-  const bEl = document.getElementById('filtBarrio');
-  barrios.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; bEl.appendChild(o); })if (!contenedor) {
-  console.error('No se encontró el contenedor');
-  return;
-};
+    const comunas = [...new Set(PADRON.map(a => a.comuna))]
+      .filter(Boolean)
+      .sort((a,b)=>parseInt(a)-parseInt(b));
 
-  const circuitos = [...new Set(PADRON.map(a => a.circuito))].sort();
-  const circEl = document.getElementById('filtCircuito');
-  circuitos.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = 'Circuito ' + c; circEl.appendChild(o); })if (!contenedor) {
-  console.error('No se encontró el contenedor');
-  return;
-};
-}
-
-function filterPadron() {
-  const search = document.getElementById('searchInput').value.toLowerCase().trim();
-  const comuna = document.getElementById('filtComuna').value;
-  const barrio = document.getElementById('filtBarrio').value;
-  const circuito = document.getElementById('filtCircuito').value;
-  const contacto = document.getElementById('filtContacto').value;
-
-  filteredPadron = PADRON.filter(a => {
-    if (search) {
-      const fullName = (a.apellido + ' ' + a.nombre).toLowerCase();
-      if (!fullName.includes(search) && !a.dni.includes(search)) return false;
-    }
-    if (comuna && a.comuna !== comuna) return false;
-    if (barrio && a.barrio !== barrio) return false;
-    if (circuito && a.circuito !== circuito) return false;
-    if (contacto === 'sin_contacto' && a.seguimientos.length > 0) return false;
-    if (contacto && contacto !== 'sin_contacto') {
-      if (!a.seguimientos.some(s => s.tipo === contacto)) return false;
-    }
-    return true;
-  });
-  currentPage = 1;
-  renderPadron();
-}
-
-function clearFilters() {
-  document.getElementById('searchInput').value = '';
-  document.getElementById('filtComuna').value = '';
-  document.getElementById('filtBarrio').value = '';
-  document.getElementById('filtCircuito').value = '';
-  document.getElementById('filtContacto').value = '';
-  filteredPadron = [...PADRON];
-  currentPage = 1;
-  renderPadron();
-}
-
-function renderPadron() {
-  const total = filteredPadron.length;
-  const totalPages = Math.ceil(total / PAGE_SIZE);
-  const start = (currentPage - 1) * PAGE_SIZE;
-  const end = Math.min(start + PAGE_SIZE, total);
-  const slice = filteredPadron.slice(start, end);
-
-  document.getElementById('padronInfo').textContent = `Mostrando ${start+1}–${end} de ${total} afiliados`;
-
-  const tipoBadge = {
-    'NO RESPONDIO PERO DEJAMOS CARTA/CONTACTO': 'badge-yellow',
-    'PUDIMOS CONTACTAR (MALA RECEPCIÓN)': 'badge-red',
-    'PUDIMOS CONTACTAR (BUENA RECEPCIÓN)': 'badge-green',
-    'NO VIVE MÁS ACÁ': 'badge-gray',
-    'ENTREGAMOS CARNET': 'badge-blue'
-  };
-  const tipoShort = {
-    'NO RESPONDIO PERO DEJAMOS CARTA/CONTACTO': 'No respondió',
-    'PUDIMOS CONTACTAR (MALA RECEPCIÓN)': 'Mala rec.',
-    'PUDIMOS CONTACTAR (BUENA RECEPCIÓN)': 'Buena rec.',
-    'NO VIVE MÁS ACÁ': 'No vive acá',
-    'ENTREGAMOS CARNET': 'Carnet ✓'
-  };
-
-  let html = '';
-  slice.forEach(a => {
-    const lastSeg = a.seguimientos.length > 0 ? a.seguimientos[a.seguimientos.length-1] : null;
-    const badge = lastSeg ? `<span class="badge ${tipoBadge[lastSeg.tipo] || 'badge-gray'}">${tipoShort[lastSeg.tipo] || lastSeg.tipo}</span>` : '<span class="badge badge-gray">Sin contacto</span>';
-    const orgBadge = a.organizacion ? `<span class="badge badge-purple" title="${a.organizacion}">${a.organizacion.split(' ')[0]}</span>` : '—';
-    html += `<tr>
-      <td style="cursor:pointer; font-weight:600;" onclick="openModal(${a.id})">${a.apellido}, ${a.nombre}</td>
-      <td>${a.dni}</td>
-      <td style="font-size:0.8rem;">${a.domicilio}</td>
-      <td>${a.barrio}</td>
-      <td>${a.circuito}</td>
-      <td>${badge}</td>
-      <td>${orgBadge}</td>
-      <td><button class="btn-icon" onclick="openModal(${a.id})" title="Registrar seguimiento">+</button></td>
-    </tr>`;
-  });
-
-  document.getElementById('padronBody').innerHTML = html || '<tr><td colspan="8"><div class="empty-state"><div class="icon">🔍</div><p>No se encontraron afiliados</p></div></td></tr>';
-
-  // Pagination
-  let pages = '';
-  const range = 2;
-  const prev = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
-  const next = `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>›</button>`;
-  pages += prev;
-  for (let p = 1; p <= totalPages; p++) {
-    if (p === 1 || p === totalPages || (p >= currentPage-range && p <= currentPage+range)) {
-      pages += `<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
-    } else if (p === currentPage-range-1 || p === currentPage+range+1) {
-      pages += `<span style="padding:0 4px;color:var(--gray-400)">…</span>`;
-    }
+    comunas.forEach(c => {
+      const o = document.createElement('option');
+      o.value = c;
+      o.textContent = 'Comuna ' + c;
+      cEl.appendChild(o);
+    });
   }
-  pages += next;
-  pages += `<span class="page-info">Pág. ${currentPage} / ${totalPages || 1}</span>`;
-  document.getElementById('padronPagination').innerHTML = pages;
-}
 
-function goPage(p) {
-  const total = filteredPadron.length;
-  const totalPages = Math.ceil(total / PAGE_SIZE);
-  if (p < 1 || p > totalPages) return;
-  currentPage = p;
-  renderPadron();
-}
+  const bEl = document.getElementById('filtBarrio');
+  if (bEl) {
+    bEl.innerHTML = '<option value="">Todos los barrios</option>';
 
+    const barrios = [...new Set(PADRON.map(a => a.barrio))]
+      .filter(Boolean)
+      .sort();
+
+    barrios.forEach(b => {
+      const o = document.createElement('option');
+      o.value = b;
+      o.textContent = b;
+      bEl.appendChild(o);
+    });
+  }
+
+  const circEl = document.getElementById('filtCircuito');
+  if (circEl) {
+    circEl.innerHTML = '<option value="">Todos los circuitos</option>';
+
+    const circuitos = [...new Set(PADRON.map(a => a.circuito))]
+      .filter(Boolean)
+      .sort();
+
+    circuitos.forEach(c => {
+      const o = document.createElement('option');
+      o.value = c;
+      o.textContent = 'Circuito ' + c;
+      circEl.appendChild(o);
+    });
+  }
+
+}
 // =================== MODAL ===================
 function openModal(id) {
   const a = PADRON.find(x => x.id === id);
