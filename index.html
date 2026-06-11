@@ -690,7 +690,7 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
       <div style="font-weight:700; font-size:0.88rem; color:#92400E; margin-bottom:2px;">Conectar con Google Sheets</div>
       <div style="font-size:0.78rem; color:#92400E; opacity:0.8;">Los seguimientos se guardarán en tu planilla de Drive automáticamente</div>
     </div>
-    <input type="text" id="scriptUrlInput" placeholder= "pegá el URL" 
+    <input type="text" id="scriptUrlInput" placeholder="Pegá la URL del Apps Script (https://script.google.com/...)" 
       style="flex:2; min-width:300px; padding:8px 12px; border:1.5px solid #F59E0B; border-radius:8px; font-size:0.85rem; outline:none; font-family:'Barlow',sans-serif;">
     <button onclick="saveScriptUrl()" 
       style="padding:8px 18px; background:#F59E0B; border:none; border-radius:8px; font-weight:700; font-size:0.85rem; cursor:pointer; font-family:'Barlow',sans-serif; white-space:nowrap;">
@@ -811,7 +811,7 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
   </div>
 
   <div class="card">
-    <div class="card-title">🗺️ Avance por Comuna, Barrio y Circuito</div>
+    <div class="card-title">🗺️ Avance por Comuna, Sector y Circuito</div>
     <div class="table-wrap">
       <table>
         <thead>
@@ -1842,15 +1842,24 @@ function filterAndGoToPadron(circuito) {
 function initPadronFilters() {
   const comunas = [...new Set(PADRON.map(a => a.comuna))].sort((a,b)=>parseInt(a)-parseInt(b));
   const cEl = document.getElementById('filtComuna');
-  comunas.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = 'Comuna ' + c; cEl.appendChild(o); });
+  comunas.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = 'Comuna ' + c; cEl.appendChild(o); })if (!contenedor) {
+  console.error('No se encontró el contenedor');
+  return;
+};
 
   const barrios = [...new Set(PADRON.map(a => a.barrio))].sort();
   const bEl = document.getElementById('filtBarrio');
-  barrios.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; bEl.appendChild(o); });
+  barrios.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; bEl.appendChild(o); })if (!contenedor) {
+  console.error('No se encontró el contenedor');
+  return;
+};
 
   const circuitos = [...new Set(PADRON.map(a => a.circuito))].sort();
   const circEl = document.getElementById('filtCircuito');
-  circuitos.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = 'Circuito ' + c; circEl.appendChild(o); });
+  circuitos.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = 'Circuito ' + c; circEl.appendChild(o); })if (!contenedor) {
+  console.error('No se encontró el contenedor');
+  return;
+};
 }
 
 function filterPadron() {
@@ -2643,17 +2652,26 @@ function reinitPadronFilters() {
   const cEl = document.getElementById('filtComuna');
   cEl.innerHTML = '<option value="">Todas las comunas</option>';
   const comunas = [...new Set(PADRON.map(a => a.comuna))].sort((a,b)=>parseInt(a)-parseInt(b));
-  comunas.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = 'Comuna ' + c; cEl.appendChild(o); });
+  comunas.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = 'Comuna ' + c; cEl.appendChild(o); })if (!contenedor) {
+  console.error('No se encontró el contenedor');
+  return;
+};
 
   const bEl = document.getElementById('filtBarrio');
   bEl.innerHTML = '<option value="">Todos los sectores</option>';
   const barrios = [...new Set(PADRON.map(a => a.barrio))].filter(Boolean).sort();
-  barrios.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; bEl.appendChild(o); });
+  barrios.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; bEl.appendChild(o); })if (!contenedor) {
+  console.error('No se encontró el contenedor');
+  return;
+};
 
   const circEl = document.getElementById('filtCircuito');
   circEl.innerHTML = '<option value="">Todos los circuitos</option>';
   const circuitos = [...new Set(PADRON.map(a => a.circuito))].filter(Boolean).sort();
-  circuitos.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = 'Circuito ' + c; circEl.appendChild(o); });
+  circuitos.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = 'Circuito ' + c; circEl.appendChild(o); })if (!contenedor) {
+  console.error('No se encontró el contenedor');
+  return;
+};
 }
 
 // =================== INIT ===================
