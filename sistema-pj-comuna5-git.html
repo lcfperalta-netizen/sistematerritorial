@@ -713,7 +713,7 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
 <nav class="topnav">
   <div class="nav-brand">
     <span class="escudo">⭐</span>
-    <span>PJ CABA · Comuna 5</span>
+    <span>PJ CABA · Barrio Padre Mugica</span>
   </div>
   <div class="nav-tabs" id="navTabs">
     <button class="nav-tab active" onclick="showPage('inicio')">🏠 Inicio</button>
@@ -745,7 +745,7 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
   <!-- HERO CON STATS -->
   <div class="hero">
     <div class="hero-title">Sistema de Relevamiento Territorial</div>
-    <div class="hero-sub">Partido Justicialista · CABA — Barrios: Almagro y Boedo</div>
+    <div class="hero-sub">Partido Justicialista · CABA — Villa 31 · Comuna 1</div>
     <div class="stats-grid" id="heroStats"></div>
   </div>
 
@@ -817,7 +817,7 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
         <thead>
           <tr>
             <th>Comuna</th>
-            <th>Barrio</th>
+            <th>Sector</th>
             <th>Circuito</th>
             <th>Afiliados</th>
             <th>Contactados</th>
@@ -843,11 +843,9 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
     </div>
     <div class="filters-bar" id="padronFilters">
       <input class="filter-input" id="searchInput" placeholder="🔍 Apellido, nombre o DNI..." oninput="filterPadron()">
-      <select class="filter-select" id="filtComuna" onchange="filterPadron()">
-        <option value="">Todas las comunas</option>
-      </select>
+
       <select class="filter-select" id="filtBarrio" onchange="filterPadron()">
-        <option value="">Todos los barrios</option>
+        <option value="">Todos los sectores</option>
       </select>
       <select class="filter-select" id="filtCircuito" onchange="filterPadron()">
         <option value="">Todos los circuitos</option>
@@ -872,7 +870,7 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
             <th>Apellido y Nombre</th>
             <th>DNI</th>
             <th>Domicilio</th>
-            <th>Barrio</th>
+            <th>Sector</th>
             <th>Circuito</th>
             <th>Último contacto</th>
             <th>Org.</th>
@@ -1025,8 +1023,21 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
         <input class="form-control" id="newDomicilio" placeholder="Calle y número">
       </div>
       <div class="form-group">
-        <label class="form-label">Barrio</label>
-        <input class="form-control" id="newBarrio" placeholder="Barrio">
+        <label class="form-label">Sector</label>
+        <select class="form-control" id="newBarrio">
+                <option value="">— Seleccioná sector —</option>
+                <option>GUEMES</option>
+                <option>YPF</option>
+                <option>VILLA 31</option>
+                <option>VILLA 31 BIS</option>
+                <option>COMUNICACIONES</option>
+                <option>INMIGRANTES</option>
+                <option>CRISTO OBRERO</option>
+                <option>FERROVIARIO</option>
+                <option>PLAYON ESTE</option>
+                <option>PLAYON OESTE</option>
+                <option>SAN MARTIN</option>
+              </select>
       </div>
     </div>
     <div class="form-row">
@@ -1071,7 +1082,7 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
         </div>
         <div style="margin-top:8px;"><span class="form-label">Domicilio</span><br><span id="mDomicilio"></span></div>
         <div class="form-row" style="margin-top:8px;">
-          <div><span class="form-label">Barrio</span><br><span id="mBarrio"></span></div>
+          <div><span class="form-label">Sector</span><br><span id="mBarrio"></span></div>
           <div><span class="form-label">Circuito</span><br><span id="mCircuito"></span></div>
         </div>
         <div class="form-row" style="margin-top:8px;">
@@ -1140,8 +1151,8 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
 </div>
 
 <script>
-// =================== DATOS PADRON REAL — COMUNA 5 ===================
-// Fuente: PADRON_PJ_COMUNA_5.xlsx — 4631 afiliados
+// =================== DATOS PADRON — BARRIO PADRE MUGICA · VILLA 31 ===================
+// Fuente: planilla Barrio Mugica — Comuna 1
 
 let PADRON = [];
 let filteredPadron = [];
@@ -1155,7 +1166,7 @@ function fmtDate(d) { return (d.getDate()<10?'0':'')+d.getDate()+'/'+(d.getMonth
 // Patrón idéntico al PAAV (PAAV-Mugica)
 
 const SCRIPT_URL_KEY = 'pjc5_script_url';
-const SCRIPT_URL_FIJA = 'https://script.google.com/macros/s/AKfycbx-LhVDa6kmOdstIeyQ9VOC_a_niqxTNRyCODW5hQL5L37sn31sZKVBlr-c9FAZXCRoOA/exec';
+const SCRIPT_URL_FIJA = 'https://script.google.com/macros/s/AKfycbzIMK0-RvOrszdoRCiISFSfxdIe5rGY-VudASn54LJQ-Br5mqjsrFBdrKn8iTsuyIhLAA/exec';
 
 function getScriptUrl() {
   return SCRIPT_URL_FIJA;
@@ -1810,7 +1821,7 @@ function renderPanel() {
     const color = pct > 70 ? 'badge-green' : pct > 40 ? 'badge-blue' : 'badge-yellow';
     tableHTML += `<tr class="clickable-row" onclick="filterAndGoToPadron('${r.circuito}')">
       <td><strong>${r.comuna}</strong></td>
-      <td>${r.barrio}</td>
+      <td>${r.sector || r.barrio}</td>
       <td>${r.circuito}</td>
       <td>${r.total}</td>
       <td>${r.contactados}</td>
@@ -2503,7 +2514,7 @@ function handleXLSXImport(event) {
       // Standard format: cols 0-19
       const usePositional = colIdx.apellido === -1;
       if (usePositional) {
-        Object.assign(colIdx, { seccion:0, barrio:1, circuito:2, apellido:3, nombre:4, genero:5, dni:6, nacimiento:7, profesion:9, domicilio:10, pisoDpto:11, cp:12, operador:13, fechaCarga:14, tipoContacto:15, organizacion:16, quiereCarnet:17, telefono:18, observaciones:19 });
+        Object.assign(colIdx, { localidad:0, seccion:1, circuito:2, codCircuito:3, apellido:4, nombre:5, genero:6, tipoDoc:7, dni:8, nacimiento:9, fechaAfil:10, profesion:11, domicilioCompleto:12, calle:13, pisoDpto:14, barrio:15, cp:16, operador:17, fechaCarga:18, tipoContacto:19, organizacion:20, quiereCarnet:21, telefono:22, observaciones:23 });
       }
 
       const parsed = [];
@@ -2549,8 +2560,8 @@ function handleXLSXImport(event) {
           dni,
           nacimiento: String(r[colIdx.nacimiento] || '').trim(),
           domicilio,
-          barrio: String(r[colIdx.barrio] || '').trim(),
-          comuna: '5',
+          barrio: String(r[colIdx.barrio] || r[colIdx.seccion] || '').trim(),
+          comuna: '1',
           circuito: String(r[colIdx.circuito] || '').trim(),
           genero: String(r[colIdx.genero] || '').trim(),
           seguimientos,
@@ -2635,7 +2646,7 @@ function reinitPadronFilters() {
   comunas.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = 'Comuna ' + c; cEl.appendChild(o); });
 
   const bEl = document.getElementById('filtBarrio');
-  bEl.innerHTML = '<option value="">Todos los barrios</option>';
+  bEl.innerHTML = '<option value="">Todos los sectores</option>';
   const barrios = [...new Set(PADRON.map(a => a.barrio))].filter(Boolean).sort();
   barrios.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; bEl.appendChild(o); });
 
