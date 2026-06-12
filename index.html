@@ -1166,7 +1166,7 @@ function fmtDate(d) { return (d.getDate()<10?'0':'')+d.getDate()+'/'+(d.getMonth
 // Patrón idéntico al PAAV (PAAV-Mugica)
 
 const SCRIPT_URL_KEY = 'pjc5_script_url';
-const SCRIPT_URL_FIJA = 'https://script.google.com/macros/s/AKfycbwyx_-oqP3cvP-aDZioICGu_xj8RuMQcCKnMwZM3_SBIH_kbpqYynAH0KknAnnjib3kjg/exec';;
+const SCRIPT_URL_FIJA = 'https://script.google.com/macros/s/AKfycbzIMK0-RvOrszdoRCiISFSfxdIe5rGY-VudASn54LJQ-Br5mqjsrFBdrKn8iTsuyIhLAA/exec';
 
 function getScriptUrl() {
   return SCRIPT_URL_FIJA;
@@ -2316,7 +2316,7 @@ function exportarPadronXLSX() {
   const ws2 = XLSX.utils.aoa_to_sheet(rowsSeg);
   XLSX.utils.book_append_sheet(wb, ws2, 'Seguimientos');
 
-  XLSX.writeFile(wb, 'padron_pj_caba.xlsx');
+  XLSX.writeFile(wb, 'padron_pj_mugica.xlsx');
 }
 
 // =================== EXPORTAR PDF ===================
@@ -2529,7 +2529,7 @@ function handleXLSXImport(event) {
 
         const nombre = String(r[colIdx.nombre] || '').trim();
         const dni = String(r[colIdx.dni] || '').trim().replace(/\.0$/, '');
-        const domBase = String(r[colIdx.domicilio] || '').replace(', Cdad. Autónoma de Buenos Aires', '').replace(', Ciudad Autónoma de Buenos Aires', '').trim();
+        const domBase = String(r[colIdx.domicilioCompleto] || r[colIdx.calle] || '').replace(', Cdad. Autónoma de Buenos Aires', '').replace(', Ciudad Autónoma de Buenos Aires', '').trim();
         const pisoDpto = String(r[colIdx.pisoDpto] || '').trim();
         const domicilio = pisoDpto && pisoDpto !== '-' ? domBase + ' ' + pisoDpto : domBase;
         const tipoContacto = String(r[colIdx.tipoContacto] || '').trim();
