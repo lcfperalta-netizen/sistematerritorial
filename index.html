@@ -1225,7 +1225,6 @@ var PASS_HASH = 'mugicapj';
 function checkLogin() {
   var val = document.getElementById('login-pass').value;
   if (val === PASS_HASH) {
-    sessionStorage.setItem(PASS_KEY, '1');
     document.getElementById('login-screen').style.display = 'none';
   } else {
     document.getElementById('login-error').textContent = 'Contraseña incorrecta. Intentá de nuevo.';
@@ -2371,6 +2370,15 @@ ${(() => {
   w.document.write(content);
   w.document.close();
 }
+
+// =================== INICIALIZACIÓN ===================
+document.addEventListener('DOMContentLoaded', function() {
+  // El login siempre se muestra al abrir (no se recuerda la sesión)
+  // Conectar y cargar el padrón desde el Sheet
+  updateSheetsStatus(true);
+  cargarPadronSheets();
+});
+
 </script>
 </body>
 </html>
