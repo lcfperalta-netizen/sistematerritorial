@@ -1226,6 +1226,9 @@ function checkLogin() {
   var val = document.getElementById('login-pass').value;
   if (val === PASS_HASH) {
     document.getElementById('login-screen').style.display = 'none';
+    // Arrancar la app después del login
+    updateSheetsStatus(true);
+    cargarPadronSheets();
   } else {
     document.getElementById('login-error').textContent = 'Contraseña incorrecta. Intentá de nuevo.';
     document.getElementById('login-pass').value = '';
@@ -2373,10 +2376,8 @@ ${(() => {
 
 // =================== INICIALIZACIÓN ===================
 document.addEventListener('DOMContentLoaded', function() {
-  // El login siempre se muestra al abrir (no se recuerda la sesión)
-  // Conectar y cargar el padrón desde el Sheet
-  updateSheetsStatus(true);
-  cargarPadronSheets();
+  // El padrón se carga después del login — ver checkLogin()
+  updateSheetsStatus(false);
 });
 
 </script>
