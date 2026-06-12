@@ -461,23 +461,9 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
 }
 
 /* MAPA CALOR */
-#mapa-calor-svg {
-  width: 100%;
-  height: 500px;
-}
-.mapa-controls {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-  align-items: center;
-}
-.leyenda-calor {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-top: 12px;
-}
+
+
+
 .leyenda-item {
   display: flex;
   align-items: center;
@@ -677,9 +663,105 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
   color: var(--celeste-dark);
   box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
+
+/* ── LOGIN ── */
+#login-screen {
+  position: fixed; inset: 0;
+  background: #1a3a6b;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+.login-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 36px 40px;
+  width: 340px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  text-align: center;
+}
+.login-box .escudo {
+  width: 56px; height: 56px;
+  background: #1a3a6b;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700; font-size: 16px; color: #e8c232;
+}
+.login-box h2 { font-size: 1.1rem; font-weight: 700; color: #1a3a6b; margin-bottom: 4px; }
+.login-box p  { font-size: 0.8rem; color: #94A3B8; margin-bottom: 24px; }
+.login-box input {
+  width: 100%; padding: 11px 14px;
+  border: 1.5px solid #e2e8f0; border-radius: 8px;
+  font-family: 'Barlow', sans-serif; font-size: 1rem;
+  outline: none; text-align: center; letter-spacing: 0.15em;
+  margin-bottom: 8px;
+}
+.login-box input:focus { border-color: #009BDF; }
+.login-box .login-btn {
+  width: 100%; padding: 12px;
+  background: #1a3a6b; color: #fff;
+  border: none; border-radius: 8px;
+  font-family: 'Barlow', sans-serif; font-weight: 700;
+  font-size: 1rem; cursor: pointer; margin-top: 8px;
+}
+.login-box .login-btn:hover { background: #2559a7; }
+.login-box .login-error {
+  font-size: 0.8rem; color: #e53e3e;
+  min-height: 18px; margin-top: 6px;
+}
+
+
+/* ── RESPONSIVE MÓVIL ── */
+@media (max-width: 768px) {
+  .topnav { padding: 0 12px; height: 52px; }
+  .brand-name { font-size: 0.9rem; }
+  .brand-sub { display: none; }
+  .nav-tabs { gap: 2px; overflow-x: auto; flex-wrap: nowrap; }
+  .nav-tab { font-size: 0.72rem; padding: 6px 8px; white-space: nowrap; }
+  .main-content { padding: 12px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .stat-card { padding: 12px; }
+  .stat-num { font-size: 1.6rem; }
+  .card { padding: 14px; }
+  .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .padron-table { font-size: 0.78rem; }
+  .padron-table th, .padron-table td { padding: 7px 8px; }
+  .form-row { flex-direction: column; gap: 8px; }
+  .form-group { width: 100%; }
+  .toolbar { flex-direction: column; align-items: stretch; gap: 6px; }
+  .filter-select, .search-input { width: 100%; }
+  .modal-box { width: 95vw; max-height: 90vh; overflow-y: auto; margin: 0; }
+  .modal-content { padding: 14px; }
+  .btn { font-size: 0.82rem; padding: 8px 12px; }
+  .sheets-status { bottom: 8px; right: 8px; font-size: 0.72rem; padding: 5px 10px; }
+  .login-box { width: 90vw; padding: 28px 24px; }
+}
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .nav-tab .tab-icon { display: inline; }
+  .nav-tab span:not(.tab-icon) { display: none; }
+  .topnav-right { gap: 6px; }
+}
+
 </style>
 </head>
 <body>
+
+<!-- ===================== LOGIN ===================== -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="escudo">PJ</div>
+    <h2>Sistema Territorial</h2>
+    <p>Barrio Padre Mugica · Villa 31</p>
+    <input type="password" id="login-pass" placeholder="Contraseña" 
+      onkeydown="if(event.key==='Enter') checkLogin()">
+    <button class="login-btn" onclick="checkLogin()">Ingresar</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+
 
 <!-- NAV -->
 <!-- ===================== BANNER CONFIG GOOGLE SHEETS ===================== -->
@@ -719,7 +801,7 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
     <button class="nav-tab active" onclick="showPage('inicio')">🏠 Inicio</button>
     <button class="nav-tab" onclick="showPage('panel')">📊 Panel</button>
     <button class="nav-tab" onclick="showPage('padron')">👥 Padrón</button>
-    <button class="nav-tab" onclick="showPage('mapa')">🗺️ Mapa</button>
+    
     <button class="nav-tab" onclick="showPage('carga')">✏️ Carga</button>
     <button class="nav-tab" onclick="showPage('exportar')">📥 Exportar</button>
   </div>
@@ -792,6 +874,8 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
   </div>
 </div>
 
+
+
 <!-- ===================== PAGE: PANEL ===================== -->
 <div class="page" id="page-panel">
   <div class="card">
@@ -811,7 +895,7 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
   </div>
 
   <div class="card">
-    <div class="card-title">🗺️ Avance por Comuna, Barrio y Circuito</div>
+    <div class="card-title">📊 Avance por Sector y Circuito</div>
     <div class="table-wrap">
       <table>
         <thead>
@@ -837,7 +921,7 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
       <div class="card-title" style="margin:0">👥 Padrón de Afiliados</div>
       <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <button class="btn btn-secondary" onclick="openImportXLSX()">📥 Importar Excel</button>
+        
         <button class="btn btn-primary" onclick="openAddAfiliado()">➕ Agregar Afiliado</button>
       </div>
     </div>
@@ -884,23 +968,6 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
   </div>
 </div>
 
-<!-- ===================== PAGE: MAPA ===================== -->
-<div class="page" id="page-mapa">
-  <div class="card">
-    <div class="card-title">🗺️ Mapa de Calor — CABA por Circuito</div>
-    <div class="mapa-controls">
-      <label style="font-size:0.85rem; font-weight:600; color:var(--gray-600);">Variable:</label>
-      <select class="filter-select" id="mapaVariable" onchange="renderMapa()">
-        <option value="contacto">Tipo de contacto (cobertura)</option>
-        <option value="afiliados">Cantidad de afiliados</option>
-        <option value="buena">Buena recepción</option>
-        <option value="carnet">Carnets entregados</option>
-      </select>
-    </div>
-    <svg id="mapa-calor-svg" viewBox="0 0 800 700" xmlns="http://www.w3.org/2000/svg"></svg>
-    <div class="leyenda-calor" id="mapaLeyenda"></div>
-  </div>
-</div>
 
 <!-- ===================== PAGE: CARGA ===================== -->
 <div class="page" id="page-carga">
@@ -941,13 +1008,13 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
       </div>
       <div class="form-group">
         <label class="form-label">¿Integra una organización?</label>
-        <select class="form-control" id="cargaOrganizacion">
+        <select class="form-control" id="cargaOrganizacion" onchange="toggleOtroOrg('cargaOrganizacionOtro',this.value)">
           <option value="">— No indica —</option>
           <option>La Cámpora</option>
-          <option>Aliados</option>
           <option>NEP</option>
-          <option>Otros</option>
+          <option value="Otro">Otro</option>
         </select>
+        <input type="text" class="form-control" id="cargaOrganizacionOtro" placeholder="Especificá la organización…" style="display:none;margin-top:6px;">
       </div>
     </div>
     <div class="form-row">
@@ -1116,13 +1183,13 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Organización</label>
-            <select class="form-control" id="mOrganizacion">
+            <select class="form-control" id="mOrganizacion" onchange="toggleOtroOrg('mOrganizacionOtro',this.value)">
               <option value="">— No indica —</option>
               <option>La Cámpora</option>
-              <option>Aliados</option>
               <option>NEP</option>
-              <option>Otros</option>
+              <option value="Otro">Otro</option>
             </select>
+            <input type="text" class="form-control" id="mOrganizacionOtro" placeholder="Especificá la organización…" style="display:none;margin-top:6px;">
           </div>
           <div class="form-group">
             <label class="form-label">¿Quiere carnet?</label>
@@ -1151,6 +1218,25 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
 </div>
 
 <script>
+// =================== LOGIN ===================
+var PASS_KEY  = 'pjmugica_auth';
+var PASS_HASH = 'mugicapj';
+
+function checkLogin() {
+  var val = document.getElementById('login-pass').value;
+  if (val === PASS_HASH) {
+    sessionStorage.setItem(PASS_KEY, '1');
+    document.getElementById('login-screen').style.display = 'none';
+  } else {
+    document.getElementById('login-error').textContent = 'Contraseña incorrecta. Intentá de nuevo.';
+    document.getElementById('login-pass').value = '';
+    document.getElementById('login-pass').focus();
+  }
+}
+
+
+
+
 // =================== DATOS PADRON — BARRIO PADRE MUGICA · VILLA 31 ===================
 // Fuente: planilla Barrio Mugica — Comuna 1
 
@@ -1448,6 +1534,24 @@ async function cargarSeguimientosSheets() {
   }
 }
 
+
+// =================== ORGANIZACIÓN OTRO ===================
+function toggleOtroOrg(inputId, val) {
+  const el = document.getElementById(inputId);
+  if (!el) return;
+  el.style.display = val === 'Otro' ? 'block' : 'none';
+  if (val !== 'Otro') el.value = '';
+}
+
+function getOrgValue(selectId, inputId) {
+  const sel = document.getElementById(selectId).value;
+  if (sel === 'Otro') {
+    const otro = document.getElementById(inputId).value.trim();
+    return otro || 'Otro';
+  }
+  return sel;
+}
+
 // =================== ESTADO ===================
 let currentPage = 1;
 const PAGE_SIZE = 50;
@@ -1463,7 +1567,6 @@ function showPage(name) {
   if (name === 'inicio') renderInicio();
   if (name === 'panel') renderPanel();
   if (name === 'padron') renderPadron();
-  if (name === 'mapa') renderMapa();
   document.getElementById('navTabs').classList.remove('open');
 }
 
@@ -2043,114 +2146,6 @@ function guardarSeguimientoModal() {
   if (document.getElementById('page-inicio').classList.contains('active')) renderInicio();
 }
 
-// =================== MAPA CALOR ===================
-// Circuitos de CABA aproximados como polígonos simplificados por zona/comuna
-// Usando representación visual simplificada (no geo exacto)
-const CIRCUITOS_MAPA = [
-  // [id_circuito, x_centro, y_centro, label, comunas_asociadas]
-  // Representamos 15 comunas como zonas coloreadas
-  { id:'C1', label:'Com.1', x:430, y:520, w:70, h:50, comunas:['1'] },
-  { id:'C2', label:'Com.2', x:440, y:440, w:60, h:60, comunas:['2'] },
-  { id:'C3', label:'Com.3', x:350, y:490, w:70, h:60, comunas:['3'] },
-  { id:'C4', label:'Com.4', x:390, y:590, w:80, h:60, comunas:['4'] },
-  { id:'C5', label:'Com.5', x:310, y:480, w:60, h:60, comunas:['5'] },
-  { id:'C6', label:'Com.6', x:270, y:440, w:70, h:70, comunas:['6'] },
-  { id:'C7', label:'Com.7', x:220, y:500, w:80, h:60, comunas:['7'] },
-  { id:'C8', label:'Com.8', x:200, y:590, w:90, h:70, comunas:['8'] },
-  { id:'C9', label:'Com.9', x:130, y:510, w:90, h:80, comunas:['9'] },
-  { id:'C10', label:'Com.10', x:170, y:420, w:80, h:70, comunas:['10'] },
-  { id:'C11', label:'Com.11', x:210, y:340, w:80, h:70, comunas:['11'] },
-  { id:'C12', label:'Com.12', x:270, y:270, w:80, h:70, comunas:['12'] },
-  { id:'C13', label:'Com.13', x:370, y:290, w:80, h:70, comunas:['13'] },
-  { id:'C14', label:'Com.14', x:320, y:370, w:80, h:80, comunas:['14'] },
-  { id:'C15', label:'Com.15', x:230, y:400, w:70, h:60, comunas:['15'] },
-];
-
-function getColorIntensity(val, max) {
-  if (max === 0) return '#EDF8FD';
-  const ratio = val / max;
-  const r = Math.round(0 + ratio * 0);
-  const g = Math.round(155 + ratio * (119-155));
-  const b = Math.round(223 + ratio * (182-223));
-  const alpha = 0.15 + ratio * 0.85;
-  return `rgba(0,${g},${b},${alpha})`;
-}
-
-function renderMapa() {
-  const variable = document.getElementById('mapaVariable').value;
-  const svg = document.getElementById('mapa-calor-svg');
-
-  // Get data per comuna
-  const dataPerComuna = {};
-  for (let c = 1; c <= 15; c++) {
-    const cStr = String(c);
-    const afs = PADRON.filter(a => a.comuna === cStr);
-    let val = 0;
-    if (variable === 'contacto') val = afs.filter(a => a.seguimientos.length > 0).length;
-    else if (variable === 'afiliados') val = afs.length;
-    else if (variable === 'buena') val = afs.filter(a => a.seguimientos.some(s=>s.tipo==='PUDIMOS CONTACTAR (BUENA RECEPCIÓN)')).length;
-    else if (variable === 'carnet') val = afs.filter(a => a.seguimientos.some(s=>s.tipo==='ENTREGAMOS CARNET')).length;
-    dataPerComuna[cStr] = { val, total: afs.length };
-  }
-  const maxVal = Math.max(...Object.values(dataPerComuna).map(d=>d.val));
-
-  // Build SVG
-  let svgContent = `
-    <!-- CABA outline simplified -->
-    <defs>
-      <filter id="shadow">
-        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15"/>
-      </filter>
-    </defs>
-    <!-- Title -->
-    <text x="400" y="35" text-anchor="middle" font-family="Barlow Condensed" font-size="18" font-weight="700" fill="#0077B6">CIUDAD AUTÓNOMA DE BUENOS AIRES</text>
-    <text x="400" y="55" text-anchor="middle" font-family="Barlow" font-size="12" fill="#94A3B8">Mapa de calor por commune — ${document.getElementById('mapaVariable').options[document.getElementById('mapaVariable').selectedIndex].text}</text>
-    <!-- Rio de la plata -->
-    <rect x="490" y="200" width="200" height="400" rx="8" fill="rgba(0,155,223,0.08)" stroke="rgba(0,155,223,0.15)" stroke-width="1"/>
-    <text x="590" y="430" text-anchor="middle" font-family="Barlow" font-size="11" fill="rgba(0,155,223,0.4)" transform="rotate(-30,590,430)">RÍO DE LA PLATA</text>
-  `;
-
-  // Draw communes
-  CIRCUITOS_MAPA.forEach(z => {
-    const cId = z.comunas[0];
-    const d = dataPerComuna[cId] || {val:0, total:0};
-    const color = getColorIntensity(d.val, maxVal);
-    const pct = d.total > 0 ? Math.round(d.val/d.total*100) : 0;
-
-    svgContent += `
-      <g filter="url(#shadow)" style="cursor:pointer;" onclick="filterAndGoToPadron('')">
-        <rect x="${z.x-z.w/2}" y="${z.y-z.h/2}" width="${z.w}" height="${z.h}" rx="6"
-          fill="${color}" stroke="rgba(0,119,182,0.4)" stroke-width="1.5"/>
-        <text x="${z.x}" y="${z.y-6}" text-anchor="middle" font-family="Barlow Condensed" font-size="11" font-weight="700" fill="#0077B6">${z.label}</text>
-        <text x="${z.x}" y="${z.y+8}" text-anchor="middle" font-family="Barlow" font-size="10" fill="#334155">${d.val}/${d.total}</text>
-        <text x="${z.x}" y="${z.y+20}" text-anchor="middle" font-family="Barlow Condensed" font-size="11" font-weight="700" fill="${pct>70?'#065F46':pct>40?'#0077B6':'#92400E'}">${pct}%</text>
-      </g>`;
-  });
-
-  // Scale bar
-  svgContent += `
-    <text x="50" y="640" font-family="Barlow" font-size="10" fill="#94A3B8">0%</text>
-    <text x="250" y="640" font-family="Barlow" font-size="10" fill="#94A3B8">100%</text>
-    <defs>
-      <linearGradient id="scaleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" style="stop-color:rgba(0,155,223,0.15)"/>
-        <stop offset="100%" style="stop-color:rgba(0,119,182,1)"/>
-      </linearGradient>
-    </defs>
-    <rect x="60" y="630" width="180" height="8" rx="4" fill="url(#scaleGrad)"/>
-  `;
-
-  svg.innerHTML = svgContent;
-
-  // Leyenda
-  document.getElementById('mapaLeyenda').innerHTML = `
-    <div class="leyenda-item"><div class="leyenda-box" style="background:rgba(0,155,223,0.15); border:1px solid rgba(0,119,182,0.3);"></div> 0–30%</div>
-    <div class="leyenda-item"><div class="leyenda-box" style="background:rgba(0,155,223,0.45);"></div> 30–60%</div>
-    <div class="leyenda-item"><div class="leyenda-box" style="background:rgba(0,119,182,0.75);"></div> 60–80%</div>
-    <div class="leyenda-item"><div class="leyenda-box" style="background:rgba(0,119,182,1);"></div> 80–100%</div>
-  `;
-}
-
 // =================== CARGA RAPIDA ===================
 let cargaSelectedId = null;
 
@@ -2210,7 +2205,7 @@ function guardarCarga() {
     fecha: fmtDate(new Date()),
     operador,
     tipo,
-    organizacion: document.getElementById('cargaOrganizacion').value,
+    organizacion: getOrgValue('cargaOrganizacion', 'cargaOrganizacionOtro'),
     carnet: document.getElementById('cargaCarnet').value,
     telefono: document.getElementById('cargaTelefono').value.trim(),
     observaciones: document.getElementById('cargaObservaciones').value.trim()
@@ -2372,349 +2367,10 @@ ${(() => {
 </table>
 
 <div class="footer">Generado por Sistema de Relevamiento Territorial PJ CABA · ${fmtDate(new Date())}</div>
-
-<!-- MODAL IMPORTAR EXCEL -->
-<div class="modal-overlay" id="importModalOverlay" onclick="if(event.target===this)closeImportModal()" style="display:none; align-items:center; justify-content:center; padding:16px;">
-  <div class="modal" style="max-width:520px;">
-    <div class="modal-header">
-      <div>
-        <div class="modal-title">📥 Importar Padrón desde Excel</div>
-        <div style="font-size:0.82rem;opacity:0.85;">Cargá un .xlsx con el mismo formato del padrón oficial</div>
-      </div>
-      <button class="modal-close" onclick="closeImportModal()">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="alert alert-info" style="margin-bottom:16px;">
-        <strong>Formato esperado:</strong> Las columnas deben ser: Sección, Circuito, Circuito Electoral, Apellido, Nombre, Género, DNI, Fecha nacimiento, Fecha afiliación, Profesión, Domicilio, Piso - dpto, Código Postal, Compañero/a que cargó, Fecha de carga, TIPO DE CONTACTO, ORGANIZACIÓN, QUIERE CARNET, TELEFONO, OBSERVACIONES
-      </div>
-      <div style="border: 2px dashed var(--celeste); border-radius: var(--radius-sm); padding: 32px; text-align: center; margin-bottom: 16px; cursor:pointer;" onclick="document.getElementById('xlsxFileInput').click()">
-        <div style="font-size: 2.5rem; margin-bottom: 8px;">📊</div>
-        <div style="font-weight:600; color:var(--celeste-dark); margin-bottom:4px;">Hacé clic o arrastrá tu archivo Excel</div>
-        <div style="font-size:0.82rem; color:var(--gray-400);">.xlsx — Padrón PJ formato oficial</div>
-        <input type="file" id="xlsxFileInput" accept=".xlsx,.xls" style="display:none;" onchange="handleXLSXImport(event)">
-      </div>
-      <div id="importProgress" style="display:none;">
-        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-          <div style="width:20px;height:20px;border:3px solid var(--celeste);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-          <span id="importProgressText" style="font-size:0.85rem; color:var(--celeste-dark);">Procesando...</span>
-        </div>
-        <div class="progress-bar" style="height:6px;"><div class="progress-fill" id="importProgressBar" style="width:0%;transition:width 0.3s;"></div></div>
-      </div>
-      <div id="importResult" style="margin-top:12px;"></div>
-      <div id="importOptions" style="display:none; margin-top:16px;">
-        <div style="font-weight:600; font-size:0.88rem; color:var(--gray-700); margin-bottom:8px;">¿Qué hacer con los datos existentes?</div>
-        <div style="display:flex; flex-direction:column; gap:8px;">
-          <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:10px; border:1.5px solid var(--gray-200); border-radius:var(--radius-sm); transition:border-color 0.2s;" id="optReemplazar">
-            <input type="radio" name="importMode" value="replace" style="margin-top:2px;" checked>
-            <div><div style="font-weight:600; font-size:0.85rem;">Reemplazar padrón completo</div><div style="font-size:0.78rem; color:var(--gray-400);">Borra los datos actuales y carga el nuevo archivo</div></div>
-          </label>
-          <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:10px; border:1.5px solid var(--gray-200); border-radius:var(--radius-sm); transition:border-color 0.2s;" id="optAgregar">
-            <input type="radio" name="importMode" value="merge">
-            <div><div style="font-weight:600; font-size:0.85rem;">Agregar al padrón existente</div><div style="font-size:0.78rem; color:var(--gray-400);">Suma los nuevos registros, omite DNIs duplicados</div></div>
-          </label>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeImportModal()">Cancelar</button>
-      <button class="btn btn-primary" id="importConfirmBtn" onclick="confirmImport()" style="display:none;">✅ Confirmar importación</button>
-    </div>
-  </div>
-</div>
-<style>
-@keyframes spin { to { transform: rotate(360deg); } }
-</style>
-
 </body></html>`;
   w.document.write(content);
   w.document.close();
-  setTimeout(() => w.print(), 500);
 }
-
-
-// =================== IMPORTAR XLSX ===================
-let importedData = null;
-
-function openImportXLSX() {
-  document.getElementById('importModalOverlay').style.display = 'flex';
-  document.getElementById('importResult').innerHTML = '';
-  document.getElementById('importProgress').style.display = 'none';
-  document.getElementById('importOptions').style.display = 'none';
-  document.getElementById('importConfirmBtn').style.display = 'none';
-  document.getElementById('xlsxFileInput').value = '';
-  importedData = null;
-}
-
-function closeImportModal() {
-  document.getElementById('importModalOverlay').style.display = 'none';
-}
-
-function handleXLSXImport(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  document.getElementById('importProgress').style.display = 'block';
-  document.getElementById('importProgressText').textContent = 'Leyendo archivo...';
-  document.getElementById('importProgressBar').style.width = '20%';
-  document.getElementById('importResult').innerHTML = '';
-  document.getElementById('importOptions').style.display = 'none';
-  document.getElementById('importConfirmBtn').style.display = 'none';
-
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      document.getElementById('importProgressText').textContent = 'Procesando filas...';
-      document.getElementById('importProgressBar').style.width = '50%';
-
-      const data = new Uint8Array(e.target.result);
-      const wb = XLSX.read(data, { type: 'array' });
-      const ws = wb.Sheets[wb.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
-
-      if (rows.length < 2) {
-        showImportError('El archivo está vacío o no tiene datos.');
-        return;
-      }
-
-      document.getElementById('importProgressText').textContent = 'Construyendo padrón...';
-      document.getElementById('importProgressBar').style.width = '75%';
-
-      const header = rows[0].map(h => String(h).trim().toUpperCase());
-      // Column indexes (flexible detection)
-      const colIdx = {
-        seccion: header.findIndex(h => h.includes('SECCI')),
-        barrio: header.findIndex(h => h === 'CIRCUITO' && !h.includes('ELECT')),
-        circuito: header.findIndex(h => h.includes('CIRCUITO ELECTORAL') || h.includes('ELECTORAL')),
-        apellido: header.findIndex(h => h.includes('APELLIDO')),
-        nombre: header.findIndex(h => h === 'NOMBRE'),
-        genero: header.findIndex(h => h.includes('NERO') || h.includes('SEXO')),
-        dni: header.findIndex(h => h === 'DNI'),
-        nacimiento: header.findIndex(h => h.includes('NACIMIENTO')),
-        profesion: header.findIndex(h => h.includes('PROFESION') || h.includes('PROFESI')),
-        domicilio: header.findIndex(h => h.includes('DOMICILIO')),
-        pisoDpto: header.findIndex(h => h.includes('PISO') || h.includes('DPTO')),
-        cp: header.findIndex(h => h.includes('POSTAL') || h === 'CP'),
-        operador: header.findIndex(h => h.includes('COMPA') || h.includes('CARG')),
-        fechaCarga: header.findIndex(h => h.includes('FECHA DE CARGA') || (h.includes('FECHA') && header.indexOf(h) > 10)),
-        tipoContacto: header.findIndex(h => h.includes('TIPO') && h.includes('CONTACTO')),
-        organizacion: header.findIndex(h => h.includes('ORGANIZACI')),
-        quiereCarnet: header.findIndex(h => h.includes('CARNET')),
-        telefono: header.findIndex(h => h.includes('TELEFONO') || h.includes('TELÉFONO')),
-        observaciones: header.findIndex(h => h.includes('OBSERV') || h.includes('OBSERV')),
-      };
-
-      // Fallback: use positional if TIPO DE CONTACTO not found by name
-      // Standard format: cols 0-19
-      const usePositional = colIdx.apellido === -1;
-      if (usePositional) {
-        Object.assign(colIdx, { localidad:0, seccion:1, circuito:2, codCircuito:3, apellido:4, nombre:5, genero:6, tipoDoc:7, dni:8, nacimiento:9, fechaAfil:10, profesion:11, domicilioCompleto:12, calle:13, pisoDpto:14, barrio:15, cp:16, operador:17, fechaCarga:18, tipoContacto:19, organizacion:20, quiereCarnet:21, telefono:22, observaciones:23 });
-      }
-
-      const parsed = [];
-      const maxId = PADRON.length > 0 ? Math.max(...PADRON.map(a => a.id)) : 0;
-
-      for (let i = 1; i < rows.length; i++) {
-        const r = rows[i];
-        if (!r || !r[colIdx.apellido]) continue;
-
-        const apellido = String(r[colIdx.apellido] || '').trim();
-        if (!apellido) continue;
-
-        const nombre = String(r[colIdx.nombre] || '').trim();
-        const dni = String(r[colIdx.dni] || '').trim().replace(/\.0$/, '');
-        const domBase = String(r[colIdx.domicilioCompleto] || r[colIdx.calle] || '').replace(', Cdad. Autónoma de Buenos Aires', '').replace(', Ciudad Autónoma de Buenos Aires', '').trim();
-        const pisoDpto = String(r[colIdx.pisoDpto] || '').trim();
-        const domicilio = pisoDpto && pisoDpto !== '-' ? domBase + ' ' + pisoDpto : domBase;
-        const tipoContacto = String(r[colIdx.tipoContacto] || '').trim();
-        const org = String(r[colIdx.organizacion] || '').trim();
-        const carnet = String(r[colIdx.quiereCarnet] || '').trim();
-        const telefono = String(r[colIdx.telefono] || '').trim();
-        const obs = String(r[colIdx.observaciones] || '').trim();
-        const operador = String(r[colIdx.operador] || '').trim();
-        const fechaCarga = String(r[colIdx.fechaCarga] || '').trim();
-
-        const seguimientos = [];
-        if (tipoContacto) {
-          seguimientos.push({
-            fecha: fechaCarga,
-            operador,
-            tipo: tipoContacto,
-            organizacion: org,
-            carnet,
-            telefono,
-            observaciones: obs
-          });
-        }
-
-        parsed.push({
-          id: maxId + i,
-          apellido,
-          nombre,
-          dni,
-          nacimiento: String(r[colIdx.nacimiento] || '').trim(),
-          domicilio,
-          barrio: String(r[colIdx.barrio] || r[colIdx.seccion] || '').trim(),
-          comuna: '1',
-          circuito: String(r[colIdx.circuito] || '').trim(),
-          genero: String(r[colIdx.genero] || '').trim(),
-          seguimientos,
-          telefono: tipoContacto ? telefono : '',
-          organizacion: tipoContacto ? org : '',
-          ultimoContacto: tipoContacto ? fechaCarga : null,
-          ultimoTipo: tipoContacto,
-          quiereCarnet: tipoContacto ? carnet : ''
-        });
-      }
-
-      document.getElementById('importProgressBar').style.width = '100%';
-      document.getElementById('importProgress').style.display = 'none';
-
-      if (parsed.length === 0) {
-        showImportError('No se encontraron afiliados válidos en el archivo. Verificá el formato.');
-        return;
-      }
-
-      importedData = parsed;
-      document.getElementById('importResult').innerHTML = `
-        <div class="alert alert-success">
-          ✅ <strong>${parsed.length.toLocaleString('es-AR')} afiliados</strong> leídos correctamente del archivo. Elegí cómo importarlos:
-        </div>`;
-      document.getElementById('importOptions').style.display = 'block';
-      document.getElementById('importConfirmBtn').style.display = 'inline-flex';
-
-    } catch(err) {
-      showImportError('Error al leer el archivo: ' + err.message);
-    }
-  };
-  reader.readAsArrayBuffer(file);
-}
-
-function showImportError(msg) {
-  document.getElementById('importProgress').style.display = 'none';
-  document.getElementById('importResult').innerHTML = `<div class="alert" style="background:#FEE2E2;color:#991B1B;border-left:3px solid var(--danger);">❌ ${msg}</div>`;
-}
-
-function confirmImport() {
-  if (!importedData) return;
-  const mode = document.querySelector('input[name="importMode"]:checked').value;
-
-  if (mode === 'replace') {
-    PADRON = importedData;
-  } else {
-    const existingDNIs = new Set(PADRON.map(a => a.dni));
-    let added = 0;
-    const maxId = Math.max(...PADRON.map(a => a.id), 0);
-    importedData.forEach((a, i) => {
-      if (!existingDNIs.has(a.dni)) {
-        a.id = maxId + i + 1;
-        PADRON.push(a);
-        added++;
-      }
-    });
-    if (added === 0) {
-      document.getElementById('importResult').innerHTML = `<div class="alert" style="background:#FEF3C7;color:#92400E;border-left:3px solid var(--warning);">⚠️ No se agregaron nuevos afiliados: todos los DNIs ya existen en el padrón.</div>`;
-      return;
-    }
-  }
-
-  filteredPadron = [...PADRON];
-  closeImportModal();
-  // Reinit filters
-  reinitPadronFilters();
-  showPage('padron');
-  renderInicio();
-  // Enviar padrón importado a Sheets (si hay URL configurada)
-  if (getScriptUrl()) {
-    enviarPadronMasivoSheets(importedData).then(() => {
-      console.log('Padrón enviado a Sheets');
-    });
-  }
-}
-
-function reinitPadronFilters() {
-  // Reset and repopulate filter dropdowns
-  const bEl = document.getElementById('filtBarrio');
-  bEl.innerHTML = '<option value="">Todos los sectores</option>';
-  const barrios = [...new Set(PADRON.map(a => a.barrio))].filter(Boolean).sort();
-  barrios.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; bEl.appendChild(o); });
-
-  const circEl = document.getElementById('filtCircuito');
-  circEl.innerHTML = '<option value="">Todos los circuitos</option>';
-  const circuitos = [...new Set(PADRON.map(a => a.circuito))].filter(Boolean).sort();
-  circuitos.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = 'Circuito ' + c; circEl.appendChild(o); });
-}
-
-// =================== INIT ===================
-document.addEventListener('DOMContentLoaded', () => {
-  // Inicializar Google Sheets — carga el padrón desde el Sheet al arrancar
-  updateSheetsStatus(true);
-  cargarPadronSheets();
-
-  // Close dropdown on click outside
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('#cargaSearch') && !e.target.closest('#cargaDropdown')) {
-      document.getElementById('cargaDropdown').style.display = 'none';
-    }
-  });
-
-  // Tab key navigation
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeModal();
-  });
-});
 </script>
-
-<!-- MODAL IMPORTAR EXCEL -->
-<div class="modal-overlay" id="importModalOverlay" onclick="if(event.target===this)closeImportModal()" style="display:none; align-items:center; justify-content:center; padding:16px;">
-  <div class="modal" style="max-width:520px;">
-    <div class="modal-header">
-      <div>
-        <div class="modal-title">📥 Importar Padrón desde Excel</div>
-        <div style="font-size:0.82rem;opacity:0.85;">Cargá un .xlsx con el mismo formato del padrón oficial</div>
-      </div>
-      <button class="modal-close" onclick="closeImportModal()">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="alert alert-info" style="margin-bottom:16px;">
-        <strong>Formato esperado:</strong> Las columnas deben ser: Sección, Circuito, Circuito Electoral, Apellido, Nombre, Género, DNI, Fecha nacimiento, Fecha afiliación, Profesión, Domicilio, Piso - dpto, Código Postal, Compañero/a que cargó, Fecha de carga, TIPO DE CONTACTO, ORGANIZACIÓN, QUIERE CARNET, TELEFONO, OBSERVACIONES
-      </div>
-      <div style="border: 2px dashed var(--celeste); border-radius: var(--radius-sm); padding: 32px; text-align: center; margin-bottom: 16px; cursor:pointer;" onclick="document.getElementById('xlsxFileInput').click()">
-        <div style="font-size: 2.5rem; margin-bottom: 8px;">📊</div>
-        <div style="font-weight:600; color:var(--celeste-dark); margin-bottom:4px;">Hacé clic o arrastrá tu archivo Excel</div>
-        <div style="font-size:0.82rem; color:var(--gray-400);">.xlsx — Padrón PJ formato oficial</div>
-        <input type="file" id="xlsxFileInput" accept=".xlsx,.xls" style="display:none;" onchange="handleXLSXImport(event)">
-      </div>
-      <div id="importProgress" style="display:none;">
-        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-          <div style="width:20px;height:20px;border:3px solid var(--celeste);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-          <span id="importProgressText" style="font-size:0.85rem; color:var(--celeste-dark);">Procesando...</span>
-        </div>
-        <div class="progress-bar" style="height:6px;"><div class="progress-fill" id="importProgressBar" style="width:0%;transition:width 0.3s;"></div></div>
-      </div>
-      <div id="importResult" style="margin-top:12px;"></div>
-      <div id="importOptions" style="display:none; margin-top:16px;">
-        <div style="font-weight:600; font-size:0.88rem; color:var(--gray-700); margin-bottom:8px;">¿Qué hacer con los datos existentes?</div>
-        <div style="display:flex; flex-direction:column; gap:8px;">
-          <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:10px; border:1.5px solid var(--gray-200); border-radius:var(--radius-sm); transition:border-color 0.2s;" id="optReemplazar">
-            <input type="radio" name="importMode" value="replace" style="margin-top:2px;" checked>
-            <div><div style="font-weight:600; font-size:0.85rem;">Reemplazar padrón completo</div><div style="font-size:0.78rem; color:var(--gray-400);">Borra los datos actuales y carga el nuevo archivo</div></div>
-          </label>
-          <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:10px; border:1.5px solid var(--gray-200); border-radius:var(--radius-sm); transition:border-color 0.2s;" id="optAgregar">
-            <input type="radio" name="importMode" value="merge">
-            <div><div style="font-weight:600; font-size:0.85rem;">Agregar al padrón existente</div><div style="font-size:0.78rem; color:var(--gray-400);">Suma los nuevos registros, omite DNIs duplicados</div></div>
-          </label>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeImportModal()">Cancelar</button>
-      <button class="btn btn-primary" id="importConfirmBtn" onclick="confirmImport()" style="display:none;">✅ Confirmar importación</button>
-    </div>
-  </div>
-</div>
-<style>
-@keyframes spin { to { transform: rotate(360deg); } }
-</style>
-
 </body>
 </html>
