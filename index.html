@@ -1254,7 +1254,7 @@ function fmtDate(d) { return (d.getDate()<10?'0':'')+d.getDate()+'/'+(d.getMonth
 // Patrón idéntico al PAAV (PAAV-Mugica)
 
 const SCRIPT_URL_KEY = 'pjc5_script_url';
-const SCRIPT_URL_FIJA = 'https://script.google.com/macros/s/AKfycbzoMxwpKF2PCiRlMNi2H4D4qQzg-KCf-AMdSQ6JjsCKDs1VgJuS7K9g2zBOhICSWSWFWQ/exec';
+const SCRIPT_URL_FIJA = 'https://script.google.com/macros/s/AKfycbwK2XYXQo6hAZTuPWv_nYmLNC2CarEkmnkkW7pkY88UcWmJJ4T9O0Jxr1spFfc2UvTn9Q/exec';
 
 function getScriptUrl() {
   return SCRIPT_URL_FIJA;
@@ -1505,21 +1505,24 @@ async function cargarSeguimientosSheets() {
     data.forEach(s => {
       const a = PADRON.find(x => x.dni === String(s.dni));
       if (!a) return;
-      // Verificar si ya existe este seguimiento (por fecha+operador)
-      const existe = a.seguimientos.some(ex => ex.fecha === s.fecha && ex.operador === s.operador && ex.tipo === s.tipo);
-      if (!existe) {
-        a.seguimientos.push({
-          fecha: s.fecha,
-          operador: s.operador,
-          tipo: s.tipo,
-          organizacion: s.organizacion || '',
-          carnet: s.carnet || '',
-          telefono: s.telefono || '',
-          observaciones: s.observaciones || ''
-        });
-        if (!a.ultimoContacto) { a.ultimoContacto = s.fecha; a.ultimoTipo = s.tipo; }
-        nuevos++;
-      }
+      // El seguimiento del Sheet es el estado DEFINITIVO de esa persona
+      // (una sola entrada por afiliado, se sobreescribe)
+      const segData = {
+        fecha: s.fecha,
+        operador: s.operador,
+        tipo: s.tipo,
+        organizacion: s.organizacion || '',
+        carnet: s.carnet || '',
+        telefono: s.telefono || '',
+        observaciones: s.observaciones || ''
+      };
+      a.seguimientos = [segData];          // reemplaza, no acumula
+      a.ultimoContacto = s.fecha;
+      a.ultimoTipo = s.tipo;
+      if (s.organizacion) a.organizacion = s.organizacion;
+      if (s.carnet)       a.quiereCarnet = s.carnet;
+      if (s.telefono)     a.telefono = s.telefono;
+      nuevos++;
     });
 
     filteredPadron = [...PADRON];
@@ -2120,7 +2123,7 @@ function guardarSeguimientoModal() {
   }
   const a = PADRON.find(x => x.id === selectedAfiliadoId);
   const tel = document.getElementById('mTelefonoNew').value.trim();
-  const org = document.getElementById('mOrganizacion').value;
+  const org = getOrgValue('mOrganizacion', 'mOrganizacionOtro');
   const carnet = document.getElementById('mCarnet').value;
   const obs = document.getElementById('mObservaciones').value.trim();
 
@@ -2133,7 +2136,7 @@ function guardarSeguimientoModal() {
     telefono: tel,
     observaciones: obs
   };
-  a.seguimientos.push(seg);
+  a.seguimientos = [seg];   // estado definitivo, no historial
   a.ultimoContacto = seg.fecha;
   a.ultimoTipo = tipo;
   if (org) a.organizacion = org;
@@ -2212,7 +2215,7 @@ function guardarCarga() {
     telefono: document.getElementById('cargaTelefono').value.trim(),
     observaciones: document.getElementById('cargaObservaciones').value.trim()
   };
-  a.seguimientos.push(seg);
+  a.seguimientos = [seg];   // estado definitivo, no historial
   a.ultimoContacto = seg.fecha;
   a.ultimoTipo = tipo;
   if (seg.organizacion) a.organizacion = seg.organizacion;
@@ -2227,6 +2230,8 @@ function guardarCarga() {
   ['cargaOperador','cargaTelefono','cargaObservaciones'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('cargaTipoContacto').value = '';
   document.getElementById('cargaOrganizacion').value = '';
+  document.getElementById('cargaOrganizacionOtro').value = '';
+  document.getElementById('cargaOrganizacionOtro').style.display = 'none';
   document.getElementById('cargaCarnet').value = '';
   setTimeout(() => { cancelarCarga(); }, 2000);
 }
