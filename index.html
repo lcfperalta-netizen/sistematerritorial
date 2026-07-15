@@ -804,6 +804,7 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
     
     <button class="nav-tab" onclick="showPage('carga')">✏️ Carga</button>
     <button class="nav-tab" onclick="showPage('exportar')">📥 Exportar</button>
+    <button class="nav-tab" onclick="showPage('preafiliacion')">📋 Pre-afiliación</button>
   </div>
   <button class="nav-mobile-toggle" onclick="toggleMobileNav()">☰</button>
 </nav>
@@ -1130,6 +1131,75 @@ tbody td { padding: 9px 12px; color: var(--gray-700); }
   </div>
 </div>
 
+<!-- ===================== PAGE: PRE-AFILIACIÓN ===================== -->
+<div class="page" id="page-preafiliacion">
+  <div class="hero" style="margin-bottom:24px;">
+    <div class="hero-title">📋 Pre-Afiliación</div>
+    <div class="hero-sub">Registro de interesados en afiliarse al Partido Justicialista</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📝 Formulario de Pre-Afiliación</div>
+    <div id="preAfiliacionAlert" style="margin-bottom:12px;"></div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Apellido *</label>
+        <input class="form-control" id="preApellido" placeholder="Apellido">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nombre *</label>
+        <input class="form-control" id="preNombre" placeholder="Nombre">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">DNI *</label>
+        <input class="form-control" id="preDNI" placeholder="Número de DNI" type="number">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Teléfono de contacto *</label>
+        <input class="form-control" id="preTelefono" placeholder="Ej: 11 1234-5678" type="tel">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Localidad</label>
+        <input class="form-control" id="preLocalidad" placeholder="Ciudad / Barrio" value="Villa 31 - CABA">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Domicilio</label>
+        <input class="form-control" id="preDomicilio" placeholder="Calle y número">
+      </div>
+    </div>
+    <div style="display:flex; justify-content:flex-end; margin-top:8px; gap:10px;">
+      <button class="btn btn-secondary" onclick="limpiarPreAfiliacion()">Limpiar</button>
+      <button class="btn btn-primary" onclick="guardarPreAfiliacion()">💾 Guardar pre-afiliación</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 Registros del día</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Apellido y Nombre</th>
+            <th>DNI</th>
+            <th>Teléfono</th>
+            <th>Localidad</th>
+            <th>Domicilio</th>
+            <th>Hora</th>
+          </tr>
+        </thead>
+        <tbody id="preAfiliacionBody">
+          <tr><td colspan="6" style="text-align:center; color:var(--gray-400); padding:20px;">Sin registros aún</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="preAfiliacionCount" style="font-size:0.82rem; color:var(--gray-400); margin-top:10px;"></div>
+  </div>
+</div>
+
 <!-- MODAL DETALLE AFILIADO -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalIfOutside(event)">
   <div class="modal" id="modalAfiliado">
@@ -1254,7 +1324,7 @@ function fmtDate(d) { return (d.getDate()<10?'0':'')+d.getDate()+'/'+(d.getMonth
 // Patrón idéntico al PAAV (PAAV-Mugica)
 
 const SCRIPT_URL_KEY = 'pjc5_script_url';
-const SCRIPT_URL_FIJA = 'https://script.google.com/macros/s/AKfycbwS72MnUY9Gfq6bfsT_d6TYeEyncuCDIUn-pIIVLT_wcqjsHKqAZ8UFK0FNbnV1Xng7Sg/exec';
+const SCRIPT_URL_FIJA = 'https://script.google.com/macros/s/AKfycbz8h-FqloyEdvn9QtPQAoNd6-iCRw1kZ1MCJBHRSVDnZA7PN9S_qS2nqNhtvdXacTGaHw/exec';
 
 function getScriptUrl() {
   return SCRIPT_URL_FIJA;
@@ -2377,6 +2447,80 @@ ${(() => {
 </body></html>`;
   w.document.write(content);
   w.document.close();
+}
+
+
+// =================== PRE-AFILIACIÓN ===================
+let preAfiliacionRegistros = [];
+
+async function guardarPreAfiliacion() {
+  const apellido  = document.getElementById('preApellido').value.trim();
+  const nombre    = document.getElementById('preNombre').value.trim();
+  const dni       = document.getElementById('preDNI').value.trim();
+  const telefono  = document.getElementById('preTelefono').value.trim();
+  const localidad = document.getElementById('preLocalidad').value.trim();
+  const domicilio = document.getElementById('preDomicilio').value.trim();
+  const alertEl   = document.getElementById('preAfiliacionAlert');
+
+  if (!apellido || !nombre || !dni || !telefono) {
+    alertEl.innerHTML = '<div class="alert" style="background:#FEE2E2;color:#991B1B;border-left:3px solid var(--danger)">Completá los campos obligatorios (*): Apellido, Nombre, DNI y Teléfono.</div>';
+    return;
+  }
+
+  const ahora = new Date();
+  const registro = {
+    apellido, nombre, dni, telefono, localidad, domicilio,
+    fecha: fmtDate(ahora),
+    hora: ahora.toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit' }),
+    timestamp: ahora.toISOString()
+  };
+
+  // Enviar al Sheet
+  alertEl.innerHTML = '<div class="alert alert-info">Guardando…</div>';
+  try {
+    await fetch(SCRIPT_URL_FIJA, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ accion: 'preafiliacion', ...registro })
+    });
+  } catch(e) {
+    console.warn('Error enviando pre-afiliación:', e);
+  }
+
+  // Agregar a la tabla local
+  preAfiliacionRegistros.unshift(registro);
+  renderPreAfiliacion();
+  limpiarPreAfiliacion();
+  alertEl.innerHTML = '<div class="alert alert-success">✅ Pre-afiliación guardada correctamente.</div>';
+  setTimeout(() => alertEl.innerHTML = '', 3000);
+}
+
+function limpiarPreAfiliacion() {
+  ['preApellido','preNombre','preDNI','preTelefono','preDomicilio'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('preLocalidad').value = 'Villa 31 - CABA';
+}
+
+function renderPreAfiliacion() {
+  const tbody = document.getElementById('preAfiliacionBody');
+  if (!preAfiliacionRegistros.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--gray-400); padding:20px;">Sin registros aún</td></tr>';
+    document.getElementById('preAfiliacionCount').textContent = '';
+    return;
+  }
+  tbody.innerHTML = preAfiliacionRegistros.map(r => `
+    <tr>
+      <td style="font-weight:600;">${r.apellido}, ${r.nombre}</td>
+      <td>${r.dni}</td>
+      <td>${r.telefono}</td>
+      <td>${r.localidad || '—'}</td>
+      <td style="font-size:0.82rem;">${r.domicilio || '—'}</td>
+      <td style="font-size:0.82rem; color:var(--gray-400);">${r.hora}</td>
+    </tr>
+  `).join('');
+  document.getElementById('preAfiliacionCount').textContent = `${preAfiliacionRegistros.length} registro${preAfiliacionRegistros.length !== 1 ? 's' : ''} en esta sesión`;
 }
 
 // =================== INICIALIZACIÓN ===================
